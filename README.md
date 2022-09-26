@@ -16,13 +16,14 @@
 ### Language
 
 - Java
-- Node
+- JavaScript
 
 ### Framework
 
 - Springboot
 - Protocol buffers
 - Netty
+- Nodejs
 
 ### Cache Server
 
