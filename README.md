@@ -365,3 +365,12 @@ public void addRankPoint(long uidx, int score) {
 
 ```
 
+### 지연 쿼리 이슈 해결
+- where 절에 date_format 을 사용하여 지연이 되는 쿼리를 찾아 수정
+
+![](query.jpg)
+
+
+### 운영 지표툴 개발화면
+
+![](kpi.jpg)
