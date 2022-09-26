@@ -1,4 +1,4 @@
-# portpolio
+# portfolio
 ### Introduction
 - 게임 서버 개발자 김윤겸입니다.
 - 깔끔하고 읽기 좋은 코드작성을 좋아합니다.
