@@ -377,5 +377,5 @@ public void addRankPoint(long uidx, int score) {
 
 
 ### 운영 지표툴 개발화면
-
+- 각종 운영에 필요한 지표 및 로그를 쉽게 조회할 수 있습니다.
 ![](kpi.jpg)
