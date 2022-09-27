@@ -131,7 +131,7 @@
 
 # Work Experience
 
-### 게임 내 모든 보상관련 처리 (Reflection 사용)
+### 분리 되어있던 인게임 보상처리를 한곳에 묶음 처리 (Reflection 사용)
 ```cs
 public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, boolean isOrderQuest, boolean isTutorial) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
