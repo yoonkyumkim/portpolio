@@ -345,8 +345,8 @@ public void addRankPoint(long uidx, int score) {
 ```
 
 ### 소켓 서버 유저 로그아웃에 대한 BroadCast 및 세션처리
+- netty 를 사용한 소켓서버
 ```cs
-
   SessionManager sessionManager = BeanUtils.getBean(SessionManager.class);
   //// 내 친구들에게 내가 로그 아웃 했다 것을 알린다.
   System.out.println("channel inactive. send msg... from userUIDX : " + userUIDX );
