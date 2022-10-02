@@ -205,7 +205,7 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
                 klass = Class.forName(CLASS_PACKET_BASE_SUFFIX + packet);
                 CLASS_MAP.put(CLASS_PACKET_BASE_SUFFIX + packet, klass);
             } else {
-                klass = (Class) CLASS_MAP.get(CLASS_PACKET_BASE_SUFFIX + packet);
+                klass = CLASS_MAP.get(CLASS_PACKET_BASE_SUFFIX + packet);
             }
             if (isProto) {
                 // protobuf 형식
