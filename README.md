@@ -200,7 +200,13 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
 
 ### 클라이언트의 모든 요청을 Mapping 하는 로직(JWT사용)
 ```cs
-Class klass = Class.forName(CLASS_PACKET_BASE_SUFFIX + packet);
+            Class klass;
+            if (!CLASS_MAP.containsKey(CLASS_PACKET_BASE_SUFFIX + packet)){
+                klass = Class.forName(CLASS_PACKET_BASE_SUFFIX + packet);
+                CLASS_MAP.put(CLASS_PACKET_BASE_SUFFIX + packet, klass);
+            } else {
+                klass = (Class) CLASS_MAP.get(CLASS_PACKET_BASE_SUFFIX + packet);
+            }
             if (isProto) {
                 // protobuf 형식
                 Method parseFrom = klass.getMethod(PACKET_BASE_PARSE_METHOD, byte[].class);
