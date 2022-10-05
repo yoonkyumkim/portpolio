@@ -32,7 +32,6 @@
 ### Database
 
 - Mysql
-- Mssql
 - Oracle
 
 ### DevOps
