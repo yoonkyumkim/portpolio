@@ -198,6 +198,7 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
 ```
 
 ### 클라이언트의 모든 요청을 Mapping 하는 로직(JWT사용)
+- 세션은 redis 에서 관리 분산 서버환경에서 세션 통합관리
 ```cs
             Class klass;
             if (!CLASS_MAP.containsKey(CLASS_PACKET_BASE_SUFFIX + packet)){
