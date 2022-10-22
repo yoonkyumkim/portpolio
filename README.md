@@ -334,6 +334,7 @@ public void addRankPoint(long uidx, int score) {
 ```
 
 ### 랭킹 정렬 조건 로직
+-점수 정렬후 동점시 유저인덱스로 2차 정렬
 ```cs
 @Override
     public String toString() {
