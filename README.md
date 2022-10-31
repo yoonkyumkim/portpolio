@@ -355,7 +355,7 @@ public void addRankPoint(long uidx, int score) {
 
 ### 소켓 서버 유저 로그아웃에 대한 BroadCast 및 세션처리
 - netty 를 사용한 소켓서버
-- 인게임 실시간 메신져 기능 수행
+- 인게임 실시간 메신져 기능 수행(1:1채팅, 실시간 접속상태 표시)
 ```cs
   SessionManager sessionManager = BeanUtils.getBean(SessionManager.class);
   //// 내 친구들에게 내가 로그 아웃 했다 것을 알린다.
