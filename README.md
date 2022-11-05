@@ -146,7 +146,6 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
         QuestReward rewardGD = GameDataGD.instance.getQuestRewardGD().get(rewardID);
 
         for (int i = 1; i <= 4; i++) {
-
             int rewardType = (int) rewardGD.getClass().getMethod("getRewardType0" + i).invoke(rewardGD);
             int rewardId = (int) rewardGD.getClass().getMethod("getRewardId0" + i).invoke(rewardGD);
             int rewardVal = (int) rewardGD.getClass().getMethod("getItemVal0" + i).invoke(rewardGD);
@@ -155,7 +154,6 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
                 rewardVal = rewardVal * eventID;
             }
             if (rewardType == REWARD_TYPE.MONEY_VALUE) {
-
                 MoneyDto moneyDto;
                 if (isOrderQuest) {
                     Map<Integer, Double> targetBuff = buffManager.orderQuestBuff(userUIDX);
