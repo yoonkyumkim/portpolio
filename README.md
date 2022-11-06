@@ -250,7 +250,6 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
 public String makeJWT(UserDto userDto) {
 
         Date nowDate = ServerTime.dow();
-
         Claims claims = Jwts.claims().setSubject("WeAccessToken");
         claims.put(Const.JWT_UID, userDto.getUserUIDX().toString());
         claims.put(Const.JWT_NID, userDto.getNationID().toString());
