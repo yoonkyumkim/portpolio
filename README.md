@@ -291,7 +291,6 @@ public void addRankPoint(long uidx, int score) {
         RankingUser User = null;
         RankingUser newUser = null;
         RankingUser beforeUser = null;
-
         int totalScore = 0;
 
         User = map.get(uidx);
