@@ -229,6 +229,7 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
                 //sst 가 있으면 확인한다.
                 Claims claims = tokenManager.parseJwt((String) headerMap.get("jwt"));
                 userUIDX = claims.get("uid", String.class);
+                
                 //jwt 성공 하면 claim 을 얻어와서 레디스에서 정보를 찾아 온다.
                 // Claims 의 형변환과 레디스에서 값을 읽어 들이는것 모두 확인 해본다.
                 session = redisDao.getSession(Long.parseLong(claims.get("uid", String.class)));
