@@ -140,9 +140,7 @@
 public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, boolean isOrderQuest, boolean isTutorial) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         Map<String, Integer> resultMap = new HashMap<>();
-
         RewardTotalData.Builder res = RewardTotalData.newBuilder();
-
         QuestReward rewardGD = GameDataGD.instance.getQuestRewardGD().get(rewardID);
 
         for (int i = 1; i <= 4; i++) {
