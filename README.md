@@ -237,7 +237,6 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
                 if (session != null && session.getExpireTime() != claims.getExpiration().getTime())
                     throw new WEError(RESULT.SESSION_ERROR, "expireTime different error.");
             }
-
             logger.info(String.format("[packName]: %s, [userUIDX]: %s, [request]: %s", packet, userUIDX, req));
 
             IProtoHandler handler = (IProtoHandler) applicationContext.getBean(packet + CLASS_SERVICE_BASE_PREFIX);
