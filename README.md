@@ -111,6 +111,7 @@
 
 
 ### Mad For Dance (https://www.birdletter.com/mad-for-dancce)
+![](mad.jpg)
  - 2019년 Google 창구 프로그램 오디션 1위 (http://www.inven.co.kr/webzine/news/?news=227414)
 
 
