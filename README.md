@@ -136,7 +136,7 @@
 - 지표툴 개발(KPI)
 
 ### Hortensia Saga (https://namu.wiki/w/%EC%98%A4%EB%A5%B4%ED%85%90%EC%8B%9C%EC%95%84%20%EC%82%AC%EA%B0%80)
-![hortensia.jpg](.jpg)
+![](hortensia.jpg)
  - 일본 수집형 rpg 게임
 
 
