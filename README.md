@@ -302,7 +302,7 @@ public String makeJWT(UserDto userDto) {
 ```
 
 ### 유저의 랭킹을 실시간으로 관리
--SortedSet 을 사용하여 랭킹 
+-SortedSet 을 사용하여 랭킹 정렬
 ```cs
 public void addRankPoint(long uidx, int score) {
 
