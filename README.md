@@ -135,6 +135,22 @@
 - 운영툴 개발
 - 지표툴 개발(KPI)
 
+### Hortensia Saga (https://namu.wiki/w/%EC%98%A4%EB%A5%B4%ED%85%90%EC%8B%9C%EC%95%84%20%EC%82%AC%EA%B0%80)
+![hortensia.jpg](.jpg)
+ - 일본 수집형 rpg 게임
+
+
+### 개발
+- 글로벌 서버 로컬라이징
+- 컨텐츠 업데이트
+- 버그 수정
+- 라이브 이슈 
+
+### 기타
+- 운영툴 개발
+- 지표툴 개발(KPI)
+- 쿠폰시스템 개발
+
 # Work Experience
 
 ### 분리 되어있던 인게임 보상처리를 한곳에 묶음 처리 (Reflection 사용)
