@@ -70,6 +70,7 @@
 # Projects
 
 ### World Economy (https://play.google.com/store/apps/details?id=com.snjsoft.WorldEconomy)
+![](we.jpg)
 - 시티류 SNG 게임
 
 ### 개발
