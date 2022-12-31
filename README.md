@@ -403,6 +403,7 @@ public void addRankPoint(long uidx, int score) {
 
 ### 지연 쿼리 이슈 해결
 - where 절에 date_format 을 사용하여 지연이 되는 쿼리를 찾아 수정
+- 커버링 인덱스를 사용하여 검색속도 증가
 
 ![](query.jpg)
 
