@@ -108,7 +108,7 @@
 <p></p>
 <p></p> 
 
-### Mad For Dance (https://www.birdletter.com/mad-for-dancce)
+### Mad For Dance (https://play.google.com/store/apps/details?id=com.birdletter.mfd)
 <img src="mad.jpg" width="400" height="800"/>
 - 2019년 Google 창구 프로그램 오디션 1위 (http://www.inven.co.kr/webzine/news/?news=227414)
 
