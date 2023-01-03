@@ -206,8 +206,8 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
                     break;
                 case REWARD_TYPE.BRANDPOINT_VALUE:
                     if (isTutorial) {
-                    // 점수 업데이트만 - 셀렉트는 다른 곳에서? - 추후 리팩토링
-                    tutorialManager.updateTutorialScore(userUIDX, rewardVal, TUTORIAL_TYPE.TUTORIAL_BRAND_VALUE);
+                        // 점수 업데이트만 - 셀렉트는 다른 곳에서? - 추후 리팩토링
+                        tutorialManager.updateTutorialScore(userUIDX, rewardVal, TUTORIAL_TYPE.TUTORIAL_BRAND_VALUE);
                     } else {
                         BrandRecordDto brandRecordDto = questManager.brandRecordUpdate(userUIDX, eventID, rewardVal);
                         res.setBrandRecordData(brandRecordDto.toProto());
