@@ -223,7 +223,7 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
                 case REWARD_TYPE.FRAME_VALUE:
                     userManager.insertProfileFrame(userUIDX, rewardId);
                     break;
-                default
+                default:
                     break;
             }
         }
