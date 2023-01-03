@@ -175,47 +175,57 @@ public RewardTotalData insertReward(long userUIDX, int rewardID, int eventID, bo
             if (isOrderQuest) {
                 rewardVal = rewardVal * eventID;
             }
-            if (rewardType == REWARD_TYPE.MONEY_VALUE) {
-                MoneyDto moneyDto;
-                if (isOrderQuest) {
-                    Map<Integer, Double> targetBuff = buffManager.orderQuestBuff(userUIDX);
-                    rewardVal += (rewardVal * (targetBuff == null ? 0 : targetBuff.getOrDefault(Buff_Type.ORDERQUEST_REWARD_VALUE, (double) 0)));
-                    moneyDto = moneyManager.calculateGold(userUIDX, rewardVal);
-                } else {
-                    boolean isMoneyType = rewardId == Money_Type.CASH_VALUE;
-                    moneyDto = isMoneyType ? moneyManager.calculateCash(userUIDX, rewardVal, false) : moneyManager.calculateGold(userUIDX, rewardVal);
-                }
-                res.addMoneyData(moneyDto.toProto());
-
-            } else if (rewardType == REWARD_TYPE.ITEM_VALUE) {
-                ItemDto itemDto = itemManager.addItem(userUIDX, rewardId, rewardVal, resultMap);
-                res.addItemData(itemDto.toProto());
-            } else if (rewardType == REWARD_TYPE.ROOMITEM_VALUE) {
-                RoomItemDto roomItemDto = roomItemManager.makeRoomItem(userUIDX, rewardId);
-                res.addRoomItemData(roomItemDto.toProto());
-            } else if (rewardType == REWARD_TYPE.ROOMCHARACTER_VALUE) {
-                CharacterDto characterDto = characterManager.makeCharacter(userUIDX, rewardId);
-                res.addCharacterData(characterDto.toProto());
-            } else if (rewardType == REWARD_TYPE.ROOMCOSTUME_VALUE) {
-                CostumeDto costumeDto = costumeManager.makeCostume(userUIDX, rewardId);
-                res.addCostumeData(costumeDto.toProto());
-            } else if (rewardType == REWARD_TYPE.BRANDPOINT_VALUE) {
-                if (isTutorial) {
+            switch (rewardType) {
+                case REWARD_TYPE.MONEY_VALUE:
+                    MoneyDto moneyDto;
+                    if (isOrderQuest) {
+                        Map<Integer, Double> targetBuff = buffManager.orderQuestBuff(userUIDX);
+                        rewardVal += (rewardVal * (targetBuff == null ? 0 : targetBuff.getOrDefault(Buff_Type.ORDERQUEST_REWARD_VALUE, (double) 0)));
+                        moneyDto = moneyManager.calculateGold(userUIDX, rewardVal);
+                    } else {
+                        boolean isMoneyType = rewardId == Money_Type.CASH_VALUE;
+                        moneyDto = isMoneyType ? moneyManager.calculateCash(userUIDX, rewardVal, false) : moneyManager.calculateGold(userUIDX, rewardVal);
+                    }
+                    res.addMoneyData(moneyDto.toProto());
+                    break;
+                case REWARD_TYPE.ITEM_VALUE:
+                    ItemDto itemDto = itemManager.addItem(userUIDX, rewardId, rewardVal, resultMap);
+                    res.addItemData(itemDto.toProto());
+                    break;
+                case REWARD_TYPE.ROOMITEM_VALUE:
+                    RoomItemDto roomItemDto = roomItemManager.makeRoomItem(userUIDX, rewardId);
+                    res.addRoomItemData(roomItemDto.toProto());
+                    break;
+                case REWARD_TYPE.ROOMCHARACTER_VALUE:
+                    CharacterDto characterDto = characterManager.makeCharacter(userUIDX, rewardId);
+                    res.addCharacterData(characterDto.toProto());
+                    break;
+                case REWARD_TYPE.ROOMCOSTUME_VALUE:
+                    CostumeDto costumeDto = costumeManager.makeCostume(userUIDX, rewardId);
+                    res.addCostumeData(costumeDto.toProto());
+                    break;
+                case REWARD_TYPE.BRANDPOINT_VALUE:
+                    if (isTutorial) {
                     // 점수 업데이트만 - 셀렉트는 다른 곳에서? - 추후 리팩토링
                     tutorialManager.updateTutorialScore(userUIDX, rewardVal, TUTORIAL_TYPE.TUTORIAL_BRAND_VALUE);
-                } else {
-                    BrandRecordDto brandRecordDto = questManager.brandRecordUpdate(userUIDX, eventID, rewardVal);
-                    res.setBrandRecordData(brandRecordDto.toProto());
-                }
-            } else if (rewardType == REWARD_TYPE.COUPON_VALUE) {
-                CouponDto couponDto = couponManager.makeCoupon(userUIDX, rewardId, rewardVal);
-                res.addCouponData(couponDto.toProto());
-            } else if (rewardType == REWARD_TYPE.ICON_VALUE) {
-                userManager.insertProfileIcon(userUIDX, rewardId);
-            } else if (rewardType == REWARD_TYPE.FRAME_VALUE) {
-                userManager.insertProfileFrame(userUIDX, rewardId);
+                    } else {
+                        BrandRecordDto brandRecordDto = questManager.brandRecordUpdate(userUIDX, eventID, rewardVal);
+                        res.setBrandRecordData(brandRecordDto.toProto());
+                    }
+                    break;
+                case REWARD_TYPE.COUPON_VALUE:
+                    CouponDto couponDto = couponManager.makeCoupon(userUIDX, rewardId, rewardVal);
+                    res.addCouponData(couponDto.toProto());
+                    break;
+                case REWARD_TYPE.ICON_VALUE:
+                    userManager.insertProfileIcon(userUIDX, rewardId);
+                    break;
+                case REWARD_TYPE.FRAME_VALUE:
+                    userManager.insertProfileFrame(userUIDX, rewardId);
+                    break;
+                default
+                    break;
             }
-
         }
         return res.build();
     }
