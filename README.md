@@ -296,7 +296,6 @@ public String makeJWT(UserDto userDto) {
     }
 
     public Jws<Claims> parseJwtToJws(String jwt) {
-
         if (jwt == null)
             throw new WEError(RESULT.SESSION_ERROR, "token null error.");
 
@@ -324,7 +323,6 @@ public void addRankPoint(long uidx, int score) {
         RankingUser newUser = null;
         RankingUser beforeUser = null;
         int totalScore = 0;
-
         User = map.get(uidx);
 
         if (User == null) { // 유저가 없으면 새로 추가
