@@ -8,10 +8,9 @@
 - 새로운 기술 사용하는 것에 긍정적입니다.
 
 ### Contact & Channel
-- Email | kukkkkkk@naver.com
+- Email | kukkkkkk@naver.com, kyum@ccr.co.kr
 - Github | https://github.com/yoonkyumkim
 - Discord | 에버#0705
-
 # Skills
 
 ### Language
