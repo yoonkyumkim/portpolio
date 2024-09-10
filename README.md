@@ -679,7 +679,7 @@ BEGIN
 			
 		COMMIT;
 
- SELECT 0 AS `RESULT`;
+ 		SELECT 0 AS `RESULT`;
 
 		SELECT v_item_category AS `item_category`;
 
