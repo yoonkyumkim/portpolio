@@ -623,6 +623,7 @@ CREATE TABLE `player_group_mission` (
   `uid` bigint(20) unsigned NOT NULL COMMENT '유저 인덱스',
   `group_idx` bigint(20) unsigned NOT NULL COMMENT '그룹 인덱스',
   `try` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '재시행 횟수',
+-- 중략 --
   `reg_date` datetime NOT NULL COMMENT '등록일',
   `expire_date` datetime NOT NULL COMMENT '만료일',
   PRIMARY KEY (`uid`,`group_idx`)
