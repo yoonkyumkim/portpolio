@@ -17,6 +17,8 @@
 
 - Java
 - JavaScript
+- TypeScript
+- C#
 
 ### Framework
 
@@ -24,6 +26,7 @@
 - Protocol buffers
 - Netty
 - Nodejs
+- Pomelo
 
 ### Cache Server
 
