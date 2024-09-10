@@ -26,6 +26,7 @@
 - Protocol buffers
 - Netty
 - Nodejs
+- express
 - Pomelo
 
 ### Cache Server
@@ -469,6 +470,24 @@ private loadFunctions(folderPath: string): void {
   }
 
 ```
+### 비동기 웹훅 처리 (javaScript)
+```
+WebHookRemote.prototype.addWebHook = function (args, cb) {
+    var self = this;
+    this.addVersionControllProgress(args.arg1, args.arg2, args.arg3);
+
+    var task = { type: args.type, arg1: args.arg1, arg2: args.arg2, arg3: args.arg3, progress: 0.0 };// 버전 추가
+    task.progress = self.getVersionControllProgress(args.arg1);
+    self.webHookQueue.push(task);
+    if (!self.timeID) {
+        self.timeID = setInterval(function () {
+            processTasks(self);
+        }, 2000);
+    }
+    return cb();
+};
+```
+### 
 
 ### DataBase 쿼리 이슈 해결
 - where 절에 date_format 을 사용하여 지연이 되는 쿼리를 찾아 수정
