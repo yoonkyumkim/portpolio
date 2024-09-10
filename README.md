@@ -637,10 +637,18 @@ END$$
 DELIMITER ;
 ```
 
-### DataBase 쿼리 이슈 해결
-- where 절에 date_format 을 사용하여 지연이 되는 쿼리를 찾아 수정
-- 사용 빈도가 높은 쿼리에 커버링 인덱스를 사용하여 검색속도 증가
-![](query.jpg)
+### DataBase 아키텍쳐 샘플
+```
+CREATE TABLE `player_group_mission` (
+  `uid` bigint(20) unsigned NOT NULL COMMENT '유저 인덱스',
+  `group_idx` bigint(20) unsigned NOT NULL COMMENT '그룹 인덱스',
+  `try` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '재시행 횟수',
+  `reg_date` datetime NOT NULL COMMENT '등록일',
+  `expire_date` datetime NOT NULL COMMENT '만료일',
+  PRIMARY KEY (`uid`,`group_idx`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='플레이어 그룹 미션';
+```
+
 
 
 ### 운영 지표툴 개발화면
