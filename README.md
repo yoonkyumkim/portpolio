@@ -487,7 +487,227 @@ WebHookRemote.prototype.addWebHook = function (args, cb) {
     return cb();
 };
 ```
-### 
+### SP 작성 샘플
+```
+DELIMITER $$
+CREATE PROCEDURE `RECEIVE_MAIL`(
+	IN `i_uid`								BIGINT(20)	UNSIGNED,		-- 플레이어 고유번호
+	IN `i_mailbox_idx`						BIGINT(20)	UNSIGNED,		-- 우편 고유번호
+	IN `i_card_idx`							SMALLINT(5)	UNSIGNED,		-- 카드 고유번호(우편의 아이템 카테고리가 캐릭터나 아이템 일 경우만 처리됨)
+	IN `i_card_amount`						INT(10)		UNSIGNED,		-- 카드 수량
+	IN `i_add_cring`						INT(10)		UNSIGNED,		-- 추가 크링
+	-- 중략 --
+)
+    COMMENT '일반우편 수령(상자 제외)'
+BEGIN
+-- ---------------------------------------------------------------------------------------------------- --
+-- 명칭 : RECEIVE_MAIL
+-- 수정 : 2021.03.16 trisakion
+-- 내용 : 일반우편 수령(상자 제외)
+-- 처리 테이블 순서 : 
+--     1. character
+--     2. item
+--     3. player_currency
+--     4. star_player
+--     5. player_profile_frame
+--     6. player_costume
+--     7. player_tickets
+--     8. mailbox
+-- ---------------------------------------------------------------------------------------------------- --
+
+	DECLARE v_sql_state						VARCHAR(5)						;
+	DECLARE v_err_no						INT								;
+	DECLARE v_err_message					TEXT							;
+	
+	DECLARE v_validator						BIGINT(20)	UNSIGNED	DEFAULT 0;					-- 플레이어 소유 재화 검증용
+    DECLARE v_limit							INT(10)		UNSIGNED	DEFAULT 0;					-- 플레이어 소유가능 재화 제한
+
+	DECLARE v_item_category					SMALLINT(5)	UNSIGNED	DEFAULT 0;					-- 우편 아이템 카테고리
+	DECLARE v_item_idx						INT(10)		UNSIGNED	DEFAULT 0;					-- 우편 아이템 고유번호
+	DECLARE v_item_count					INT(10)		UNSIGNED	DEFAULT 0;					-- 우편 아이템 수량
+	DECLARE v_expire_date					DATETIME;											-- 우편 만료일시
+	DECLARE v_received_yn					ENUM('Y', 'N')			DEFAULT 'N';				-- 우편 수신 여부
+
+	DECLARE v_reward_cring					INT(10)		UNSIGNED	DEFAULT 0;					-- 보상 크링
+	DECLARE v_reward_free_diamond			INT(10)		UNSIGNED	DEFAULT 0;					-- 보상 무료 다이아몬드
+	DECLARE v_reward_paid_diamond			INT(10)		UNSIGNED	DEFAULT 0;					-- 보상 유료 다이아몬드
+	DECLARE v_reward_character_idx			SMALLINT(5)	UNSIGNED	DEFAULT 0;					-- 보상 캐릭터 고유번호
+	DECLARE v_reward_item_idx				SMALLINT(5)	UNSIGNED	DEFAULT 0;					-- 보상 아이템 고유번호
+	
+	-- 중략 --
+	
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+		GET DIAGNOSTICS CONDITION 1
+        v_sql_state = RETURNED_SQLSTATE,
+        v_err_no = MYSQL_ERRNO,
+		v_err_message = MESSAGE_TEXT;
+    
+		ROLLBACK;
+		SELECT 99 AS `RESULT`, v_sql_state AS `SQL_STATE`, v_err_no AS `ERROR_NO`, v_err_message AS `ERROR_MESSAGE`;
+    END;
+
+	DECLARE EXIT HANDLER FOR 1265
+    BEGIN
+		GET DIAGNOSTICS CONDITION 1
+		@err_message = MESSAGE_TEXT;
+    
+		ROLLBACK;
+		SELECT 99 AS `RESULT`, @err_message AS `ERROR_MESSAGE`;
+    END;
+	
+    transaction_block:
+	BEGIN
+    
+		SET v_limit = GET_CURRENCY_CAPACITY();
+	
+		SELECT `receiver_uid`, `item_category`, `item_idx`, `item_count`, `expire_date`, `received_yn`
+			INTO v_validator, v_item_category, v_item_idx, v_item_count, v_expire_date, v_received_yn
+		FROM `mailbox`
+		WHERE `receiver_uid` = `i_uid`
+          AND `mailbox_idx` = `i_mailbox_idx`;
+	
+		-- 우편을 찾을 수 없으면 오류
+		IF 0 >= v_validator THEN
+			SELECT 1 AS `RESULT`;
+			LEAVE transaction_block;
+		END IF;
+	
+		-- 우편이 만료되었다면 오류
+		IF v_expire_date < NOW() THEN
+			SELECT 2 AS `RESULT`;
+			LEAVE transaction_block;
+		END IF;
+	
+		-- 우편을 이미 수령했다면 오류
+		IF v_received_yn != 'N' THEN
+			SELECT 3 AS `RESULT`;
+			LEAVE transaction_block;
+		END IF;
+
+		SET v_validator = 0;
+
+		CASE v_item_category
+			WHEN 0 THEN		-- 보상 없음
+				BEGIN
+							-- 보상이 없다.
+                END;
+			WHEN 1 THEN		-- 크링
+				BEGIN
+		
+					SELECT `cring` + v_item_count
+						INTO v_validator
+					FROM `player_currency`
+					WHERE `uid` = `i_uid`;
+					
+					-- 보유제한 크링을 초과하면 오류
+                    IF v_validator > v_limit THEN
+						SELECT 4 AS `RESULT`;
+						LEAVE transaction_block;
+                    END IF;
+                    
+                    SET v_reward_cring = v_item_count;
+
+                END;
+			WHEN 2 THEN		-- 무료 다이아몬드
+				BEGIN
+
+					SELECT `free_diamond` + v_item_count
+					  INTO v_validator
+					  FROM `player_currency`
+					 WHERE `uid` = `i_uid`;
+
+                    -- 보유제한 무료 다이아몬드를 초과하면 오류
+                    IF v_validator > v_limit THEN
+						SELECT 5 AS `RESULT`;
+						LEAVE transaction_block;
+                    END IF;
+
+                    SET v_reward_free_diamond = v_item_count;
+
+                END;
+			WHEN 3 THEN		-- 캐릭터
+				BEGIN
+                    SET v_reward_cring = i_add_cring;
+					SET v_reward_character_idx = i_card_idx;
+				END;
+			WHEN 4 THEN		-- 아이템
+				BEGIN
+                    SET v_reward_cring = i_add_cring;
+					SET v_reward_item_idx = i_card_idx;
+                END;
+
+			-- 중략 --
+		END CASE;
+		
+		START TRANSACTION;
+		
+			-- 캐릭터 지급
+			IF v_reward_character_idx > 0 AND i_card_amount > 0 THEN
+				INSERT INTO `character` (`uid`, `attr_character_idx`, `amount`)
+				VALUE (`i_uid`, v_reward_character_idx, i_card_amount)
+				ON DUPLICATE KEY UPDATE
+					`amount` = `amount` + i_card_amount;
+			END IF;
+			
+			-- 아이템 지급
+			IF v_reward_item_idx > 0 AND i_card_amount > 0 THEN
+				INSERT INTO `item` (`uid`, `attr_item_idx`, `amount`)
+				VALUE (`i_uid`, v_reward_item_idx, i_card_amount)
+				ON DUPLICATE KEY UPDATE
+					`amount` = `amount` + i_card_amount;
+			END IF;
+
+			-- 재화(무료다이아, 크링)
+			IF v_reward_cring > 0 OR v_reward_free_diamond > 0 OR v_reward_paid_diamond > 0 THEN
+				UPDATE `player_currency`
+                   SET `cring` = IF(`cring` + v_reward_cring > v_limit, -1, `cring` + v_reward_cring + v_frame_exchange_cring),
+					   `diamond` = IF(`diamond` + v_reward_paid_diamond > v_limit, -1, `diamond` + v_reward_paid_diamond),
+                       `free_diamond` = IF(`free_diamond` + v_reward_free_diamond > v_limit, -1, `free_diamond` + v_reward_free_diamond + v_frame_exchange_diamond)
+				WHERE `uid` = `i_uid`;
+            END IF;
+
+			-- 중략 --
+			
+            -- 우편수령 처리
+            UPDATE `mailbox`
+               SET `received_yn`=IF(`received_yn` = 'N', 'Y', 'ERR'),
+               -- SET `received_yn`='N',
+                   `received_date`=NOW()
+			WHERE `mailbox_idx` = `i_mailbox_idx`
+              AND `receiver_uid` = `i_uid`;
+			
+		COMMIT;
+
+ SELECT 0 AS `RESULT`;
+
+		SELECT v_item_category AS `item_category`;
+
+		SELECT `diamond`, `free_diamond`, `cring`,
+		       v_frame_exchange AS `is_frame_exchange`,
+		       v_frame_exchange_cring AS `frame_exchange_cring`,
+			   v_frame_exchange_diamond AS `frame_exchange_diamond`
+        FROM `player_currency`
+        WHERE `uid` = `i_uid`;
+		
+		IF v_reward_character_idx > 0 AND v_item_count > 0 THEN
+			SELECT A.`serial_code`, A.`uid`, A.`attr_character_idx`, A.`level`, A.`amount`,
+				   A.`active_yn`, A.`description`, A.`reg_date`, A.`update_date`
+			FROM `character` AS A
+			WHERE A.`uid` = `i_uid`
+			  AND A.`attr_character_idx` = v_reward_character_idx;
+		ELSEIF v_reward_item_idx > 0 AND v_item_count > 0 THEN
+			SELECT A.`serial_code`, A.`uid`, A.`attr_item_idx`, A.`level`, A.`amount`, A.`skin_idx`, A.`active_yn`, A.`description`, A.`reg_date`, A.`update_date`
+			FROM `item` AS A
+			WHERE A.`uid` = `i_uid`
+			  AND A.`attr_item_idx` = v_reward_item_idx;
+		END IF;
+		
+    END;
+END$$
+
+DELIMITER ;
+```
 
 ### DataBase 쿼리 이슈 해결
 - where 절에 date_format 을 사용하여 지연이 되는 쿼리를 찾아 수정
