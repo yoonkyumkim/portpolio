@@ -425,7 +425,7 @@ public void addRankPoint(long uidx, int score) {
    sessionManager.deleteClubSession(clubUIDX, userUIDX)
 
 ```
-### 폴더 트리별로 api 버전 관리
+### 폴더 트리별로 api 버전 관리 (typescript)
 ```
 private loadFunctions(folderPath: string): void {
     const files = fs.readdirSync(folderPath);
