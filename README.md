@@ -71,8 +71,23 @@
 - 정보처리기사
 
 # Projects
+### Fortress M
 
-### World Economy (https://play.google.com/store/apps/details?id=com.snjsoft.WorldEconomy)
+- 온라인 포격 게임
+
+### 개발
+- nodejs, pomelo 기반의 게임 컨텐츠 개발
+- 업적, 이벤트 퀘스트 개발
+- 카드 합성 시스템 개발
+- 클랜 시스템 개선
+- 코드 리팩터링
+- 로그인 SDK 개발
+- DB 설계 및 최적화
+
+<p></p>
+<p></p> 
+
+### World Economy
 ![](we.jpg)
 - 시티류 SNG 게임
 
