@@ -430,7 +430,7 @@ CREATE PROCEDURE `RECEIVE_MAIL`(
 BEGIN
 -- ---------------------------------------------------------------------------------------------------- --
 -- 명칭 : RECEIVE_MAIL
--- 수정 : 2021.03.16 trisakion
+-- 수정 : 2021.03.16 svn name
 -- 내용 : 일반우편 수령(상자 제외)
 -- 처리 테이블 순서 : 
 --     1. character
@@ -455,13 +455,6 @@ BEGIN
 	DECLARE v_item_count					INT(10)		UNSIGNED	DEFAULT 0;					-- 우편 아이템 수량
 	DECLARE v_expire_date					DATETIME;											-- 우편 만료일시
 	DECLARE v_received_yn					ENUM('Y', 'N')			DEFAULT 'N';				-- 우편 수신 여부
-
-	DECLARE v_reward_cring					INT(10)		UNSIGNED	DEFAULT 0;					-- 보상 크링
-	DECLARE v_reward_free_diamond			INT(10)		UNSIGNED	DEFAULT 0;					-- 보상 무료 다이아몬드
-	DECLARE v_reward_paid_diamond			INT(10)		UNSIGNED	DEFAULT 0;					-- 보상 유료 다이아몬드
-	DECLARE v_reward_character_idx			SMALLINT(5)	UNSIGNED	DEFAULT 0;					-- 보상 캐릭터 고유번호
-	DECLARE v_reward_item_idx				SMALLINT(5)	UNSIGNED	DEFAULT 0;					-- 보상 아이템 고유번호
-	
 	-- 중략 --
 	
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -559,11 +552,6 @@ BEGIN
                     SET v_reward_cring = i_add_cring;
 					SET v_reward_character_idx = i_card_idx;
 				END;
-			WHEN 4 THEN		-- 아이템
-				BEGIN
-                    SET v_reward_cring = i_add_cring;
-					SET v_reward_item_idx = i_card_idx;
-                END;
 
 			-- 중략 --
 		END CASE;
@@ -574,14 +562,6 @@ BEGIN
 			IF v_reward_character_idx > 0 AND i_card_amount > 0 THEN
 				INSERT INTO `character` (`uid`, `attr_character_idx`, `amount`)
 				VALUE (`i_uid`, v_reward_character_idx, i_card_amount)
-				ON DUPLICATE KEY UPDATE
-					`amount` = `amount` + i_card_amount;
-			END IF;
-			
-			-- 아이템 지급
-			IF v_reward_item_idx > 0 AND i_card_amount > 0 THEN
-				INSERT INTO `item` (`uid`, `attr_item_idx`, `amount`)
-				VALUE (`i_uid`, v_reward_item_idx, i_card_amount)
 				ON DUPLICATE KEY UPDATE
 					`amount` = `amount` + i_card_amount;
 			END IF;
