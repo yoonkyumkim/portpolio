@@ -8,7 +8,7 @@
 - 새로운 기술 사용하는 것에 긍정적입니다.
 
 ### Contact & Channel
-- Email | kukkkkkk@naver.com, kyum@ccr.co.kr
+- Email | kukkkkkk@naver.com
 - Github | https://github.com/yoonkyumkim
 - Discord | 에버#0705
 # Skills
@@ -423,6 +423,49 @@ public void addRankPoint(long uidx, int score) {
   sessionManager.removeUserSession( userUIDX );
   if (clubUIDX != 0 )
    sessionManager.deleteClubSession(clubUIDX, userUIDX)
+
+```
+### 폴더 트리별로 api 버전 관리
+```
+private loadFunctions(folderPath: string): void {
+    const files = fs.readdirSync(folderPath);
+    const allowedExtensions = ['.js', '.ts'];
+
+    for (let file in files) {
+      let filePath = path.join(folderPath, files[file]);
+      let stats = fs.lstatSync(filePath);
+      if (stats.isDirectory()) {
+        this.loadFunctions(filePath);
+        continue;
+      }
+
+      if (!allowedExtensions.includes(path.extname(files[file])))
+        continue;
+
+      let functionName = files[file].substring(0, files[file].lastIndexOf('.'));
+      let module = require(filePath);
+      let func = module[functionName];
+
+      let prefixArr = filePath.replace(folderPath, '').replace(path.extname(filePath), '').split(path.sep).filter(function (s) { return s != ''; });
+      let folder = folderPath.substring(folderPath.lastIndexOf(path.sep)+1);
+      for (let methodName of Object.getOwnPropertyNames(func.prototype)) {
+        let method = func.prototype[methodName];
+        if (typeof method !== 'function')
+          continue;
+
+        if (methodName == 'constructor')
+          continue;
+
+        if (folder == 'system') {
+          this.systemMap.set(`/${folder}/${methodName}`, method);
+          logger.info(`System Route Set : /${folder}/${methodName}`);
+        } else {
+          this.functionMap.set(`/${folder}/${prefixArr.toString().toLowerCase()}/${methodName}`, method);
+          logger.info(`Route Set : /${folder}/${prefixArr.toString().toLowerCase()}/${methodName}`);
+        }
+      }
+    }
+  }
 
 ```
 
