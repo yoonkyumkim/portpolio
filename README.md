@@ -631,9 +631,7 @@ CREATE TABLE `player_group_mission` (
 ```
 
 ## Server 아키텍쳐 설계 작업 일부
-![](SDK Server Arch.png)
-
-
+![](SDK_Server_Arch.png)
 
 ### 운영 지표툴 개발화면
 - 각종 운영에 필요한 지표 및 로그를 쉽게 조회할 수 있습니다.
