@@ -617,17 +617,45 @@ END$$
 DELIMITER ;
 ```
 
-### DataBase 아키텍쳐 샘플
+### DataBase 로그 아키텍쳐 샘플 
+- 월 단위로 로그 파티셔닝
 ```
-CREATE TABLE `player_group_mission` (
-  `uid` bigint(20) unsigned NOT NULL COMMENT '유저 인덱스',
-  `group_idx` bigint(20) unsigned NOT NULL COMMENT '그룹 인덱스',
-  `try` int(10) unsigned NOT NULL DEFAULT '1' COMMENT '재시행 횟수',
--- 중략 --
-  `reg_date` datetime NOT NULL COMMENT '등록일',
-  `expire_date` datetime NOT NULL COMMENT '만료일',
-  PRIMARY KEY (`uid`,`group_idx`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='플레이어 그룹 미션';
+CREATE TABLE `log_battle` (
+	`idx` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'PK',
+	`month` TINYINT(2) UNSIGNED NOT NULL COMMENT '월(파티션)',
+	`reg_date` DATETIME NOT NULL COMMENT '등록 일시',
+	`action` TINYINT(2) UNSIGNED NOT NULL COMMENT '액션(원인)',
+	`link_key` VARCHAR(40) NULL DEFAULT NULL COMMENT '링크 키' COLLATE 'utf8_general_ci',
+	`uid` BIGINT(20) UNSIGNED NOT NULL COMMENT '플레이어 고유번호',
+	`character_slot` TINYINT(2) UNSIGNED NOT NULL COMMENT '사용된 플레이어별 캐릭터슬롯 번호',
+	`start_date` DATETIME NOT NULL COMMENT '게임 시작 일시',
+	`room_id` VARCHAR(100) NOT NULL COMMENT '게임 룸 아이디' COLLATE 'utf8_general_ci',
+	`gamedb_idx` SMALLINT(5) UNSIGNED NOT NULL COMMENT '배틀 정보 저장된 게임 디비 인덱스 (GameDB.battle)',
+	-- 중략 --
+	`market` TINYINT(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '마켓',
+	`mcc` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '국가코드',
+	PRIMARY KEY (`idx`, `month`) USING BTREE,
+	INDEX `log_battle_uid_reg_date` (`uid`, `reg_date`) USING BTREE,
+	INDEX `log_battle_link_key` (`link_key`) USING BTREE,
+	INDEX `log_battle_ingame` (`uid`, `battle_idx`) USING BTREE,
+	INDEX `log_battle_season` (`season`) USING BTREE
+)
+COMMENT='배틀 로그'
+COLLATE='utf8_general_ci'
+/*!50100 PARTITION BY RANGE  COLUMNS(`month`)
+(PARTITION p01 VALUES LESS THAN (2) ENGINE = InnoDB,
+ PARTITION p02 VALUES LESS THAN (3) ENGINE = InnoDB,
+ PARTITION p03 VALUES LESS THAN (4) ENGINE = InnoDB,
+ PARTITION p04 VALUES LESS THAN (5) ENGINE = InnoDB,
+ PARTITION p05 VALUES LESS THAN (6) ENGINE = InnoDB,
+ PARTITION p06 VALUES LESS THAN (7) ENGINE = InnoDB,
+ PARTITION p07 VALUES LESS THAN (8) ENGINE = InnoDB,
+ PARTITION p08 VALUES LESS THAN (9) ENGINE = InnoDB,
+ PARTITION p09 VALUES LESS THAN (10) ENGINE = InnoDB,
+ PARTITION p10 VALUES LESS THAN (11) ENGINE = InnoDB,
+ PARTITION p11 VALUES LESS THAN (12) ENGINE = InnoDB,
+ PARTITION p12 VALUES LESS THAN (MAXVALUE) ENGINE = InnoDB)  */;
+
 ```
 
 ## Server 아키텍쳐 설계 작업 일부
