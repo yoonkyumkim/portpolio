@@ -630,6 +630,9 @@ CREATE TABLE `player_group_mission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='플레이어 그룹 미션';
 ```
 
+## Server 아키텍쳐 설계 작업 일부
+![](SDK Server Arch.png)
+
 
 
 ### 운영 지표툴 개발화면
